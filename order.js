@@ -1,5 +1,5 @@
 var Nightmare = require('nightmare');
-var nightmare = Nightmare({ show: true })
+var nightmare = Nightmare({ show: false, typeInterval: 4 })
 var fs = require('fs');
 var options = JSON.parse(fs.readFileSync('.eatclubrc', 'utf8'));
 
@@ -56,9 +56,11 @@ var checkThDay = function(current_day) {
                                     }
                                   }
                                 }, options.preferences, current_day)
+                                .wait('.cart-content')
                                 .wait('.cart-checkout-button:not(.ng-hide)')
                                 .click('.cart-checkout-button')
                                 .wait('.order-confirmation-message:not(.ng-hide)')
+                                .wait(1000)
                                 .then(function() {
                                   return checkThDay(current_day+1);
                                 });
@@ -88,5 +90,5 @@ nightmare
     console.log(result)
   })
   .catch(function (error) {
-    console.error('Search failed:', error);
+    return nightmare.end()
   });
