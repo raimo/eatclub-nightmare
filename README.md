@@ -1,4 +1,4 @@
-# Order food automatically from EatClub
+# (Again!) Order food automatically from EatClub
 
 ## Installation
 
@@ -8,8 +8,4 @@
 1. Install crontab as instructed in `crontab.example`
 1. Install credentials and preferences for EatClub as instructed in `eatclubrc.example`
 1. Ready!
-
-## Known Issues
-
-Currently EatClub's site has changed so that the script doesn't seem to work. :(
 
