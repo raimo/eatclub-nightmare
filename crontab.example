@@ -1,0 +1,2 @@
+# Set this up in crontab, using e.g. `crontab -e`
+37 6 * * * DEBUG='nightmare:actions*' node eatclub-nightmare/order.js >> eatclub-nightmare/log.txt 2>&1
