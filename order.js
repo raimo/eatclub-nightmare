@@ -73,7 +73,7 @@ nightmare
     console.log('CONSOLE.LOG: ' + msg);
    })
 nightmare
-  .goto('https://www.eatclub.com/login/')
+  .goto('https://www.eatclub.com/accounts/login/')
   .type('form [name=email]', options.eatclub_email)
   .type('form [name=password]', options.eatclub_password)
   .click('form [type=submit]')
