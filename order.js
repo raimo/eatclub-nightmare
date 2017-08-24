@@ -1,5 +1,6 @@
 var Nightmare = require('nightmare');
-var nightmare = Nightmare({ show: false, typeInterval: 4 })
+//var nightmare = Nightmare({ show: false, typeInterval: 4, waitTimeout: 2000 })
+var nightmare =  Nightmare({ show: false, typeInterval: 4, pollInterval: 1000 }, { 'web-preferences': {'web-security': false} }, { waitTimeout:30000, pollInterval: 1000 });
 var fs = require('fs');
 var options = JSON.parse(fs.readFileSync('.eatclubrc', 'utf8'));
 
@@ -9,8 +10,9 @@ var checkThDay = function(current_day) {
   console.log('checkThDay call with ' + current_day);
   if (current_day > 5) nightmare.end();
 
+         //.wait(1000000)
   return nightmare
-         .wait('[filter-service="dailyMenuCtrl.menuFilterService"] li.dropdown-item:nth-child(' + current_day + ')')
+         .wait('.nomicon-heart.favorites-icon-unchecked.ng-scope')
          .exists('[filter-service="dailyMenuCtrl.menuFilterService"] li.dropdown-item:nth-child(' + current_day + ') .nomicon-check-filled')
          .then(function(presentInDom) {
            if (presentInDom) {
@@ -56,11 +58,12 @@ var checkThDay = function(current_day) {
                                     }
                                   }
                                 }, options.preferences, current_day)
-                                .wait('.cart-content')
-                                .wait('.cart-checkout-button:not(.ng-hide)')
-                                .click('.cart-checkout-button')
-                                .wait('.order-confirmation-message:not(.ng-hide)')
                                 .wait(1000)
+                                .evaluate(function() {
+                                  $('.qty-num').val(1);
+                                  $('.cart-item-price:contains($):not(:contains($0.00))').parent().parent().find('.cart-item-delete').click();
+                                  $('button:contains(Checkout)').click();
+                                })
                                 .then(function() {
                                   return checkThDay(current_day+1);
                                 });
