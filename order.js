@@ -46,7 +46,7 @@ var checkThDay = function(current_day) {
                                     var candidates = $(expression);
                                     console.log('Food including "' + preferenceOptions[i].include + '" excluding "' + preferenceOptions[i].exclude + '" count: ' + candidates.length);
                                     if (candidates.length > 0) {
-                                      var $selection = $('[ng-mouseover] .ng-binding:not(.ng-hide):contains(ADD)', candidates.get(0));
+                                      var $selection = $('.item-purchase-button .ng-binding:not(.ng-hide):contains(Add)', candidates.get(0));
                                       dishName = $selection.closest('menu-item').find('.mi-item-name-link').text().trim();
                                       console.log('Picking ' + dishName);
                                       $selection.click();
