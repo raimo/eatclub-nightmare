@@ -6,18 +6,16 @@ var options = JSON.parse(fs.readFileSync('.eatclubrc', 'utf8'));
 
 console.log("Using food preferences: " + JSON.stringify(options.preferences));
 
-var checkThDay = function(current_day) {
-  console.log('checkThDay call with ' + current_day);
-  if (current_day > 5) nightmare.end();
-
-         //.wait(1000000)
+var checkDayNumber = function(current_day) {
+  console.log('checkDayNumber call with ' + current_day);
+  if (current_day > 5) return nightmare.end();
   return nightmare
          .wait('.nomicon-heart.favorites-icon-unchecked.ng-scope')
          .exists('[filter-service="dailyMenuCtrl.menuFilterService"] .hide-for-small-only:nth-child(' + current_day + ') .nomicon-check-filled')
          .then(function(presentInDom) {
            if (presentInDom) {
              console.log('day ' + current_day + ' was already processed');
-             return checkThDay(current_day+1);
+             return checkDayNumber(current_day+1);
            } else {
              console.log('presentInDom = ' + presentInDom)
              console.log('day ' + current_day + ' NEEDS to be processed');
@@ -60,7 +58,7 @@ var checkThDay = function(current_day) {
                                   $('button:contains(Checkout)').click();
                                 })
                                 .then(function() {
-                                  return checkThDay(current_day+1);
+                                  return checkDayNumber(current_day+1);
                                 });
 
            }
@@ -76,15 +74,11 @@ nightmare
   .type('form [name=password]', options.eatclub_password)
   .click('form [type=submit]')
   .then(function() {
-    return checkThDay(1);
+    return checkDayNumber(1);
   })
   .then(function() {
-    console.log('moi');
+    console.log('Selections made! Exiting.');
     return nightmare.end();
-  })
-  .then(function (result) {
-    console.log('moi2');
-    console.log(result)
   })
   .catch(function (error) {
     return nightmare.end()
