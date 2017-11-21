@@ -20,9 +20,9 @@ var checkDayNumber = function(current_day) {
              console.log('presentInDom = ' + presentInDom)
              console.log('day ' + current_day + ' NEEDS to be processed');
                        return nightmare
-                                .wait('.collapsible-date-selector')
+                                .wait('.collapsible-date-selector .hide-for-small-only:nth-child(' + (current_day) + ') [ng-click] .date-header')
                                 .click('.collapsible-date-selector .hide-for-small-only:nth-child(' + (current_day) + ') [ng-click]')
-                                .wait(1000)
+                                .wait('#menu-' + (current_day-1) + ' menu-item, #menu-' + (current_day-1) + ' .closed-title')
                                 .evaluate(function(preferenceOptions, current_day) {
                                   for (var i = 0; i < preferenceOptions.length; i++) {
                                     var expression = 'menu-item:not(:has(.ribbon.soldout))';
