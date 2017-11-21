@@ -13,7 +13,7 @@ var checkThDay = function(current_day) {
          //.wait(1000000)
   return nightmare
          .wait('.nomicon-heart.favorites-icon-unchecked.ng-scope')
-         .exists('[filter-service="dailyMenuCtrl.menuFilterService"] li.dropdown-item:nth-child(' + current_day + ') .nomicon-check-filled')
+         .exists('[filter-service="dailyMenuCtrl.menuFilterService"] .hide-for-small-only:nth-child(' + current_day + ') .nomicon-check-filled')
          .then(function(presentInDom) {
            if (presentInDom) {
              console.log('day ' + current_day + ' was already processed');
@@ -22,13 +22,9 @@ var checkThDay = function(current_day) {
              console.log('presentInDom = ' + presentInDom)
              console.log('day ' + current_day + ' NEEDS to be processed');
                        return nightmare
-                                .click('[filter-service="dailyMenuCtrl.menuFilterService"] li.dropdown-item:nth-child(' + current_day + ')')
-                                .wait(function(current_day) {
-                                  return new RegExp($('[filter-service="dailyMenuCtrl.menuFilterService"] [uib-dropdown-toggle]').text().trim()).test(
-                                    $('[filter-service="dailyMenuCtrl.menuFilterService"] li.dropdown-item:nth-child(' + current_day + ')').text()
-                                  );
-                                }, current_day)
-                                .wait('.loading-message.ng-hide')
+                                .wait('.collapsible-date-selector')
+                                .click('.collapsible-date-selector .hide-for-small-only:nth-child(' + (current_day) + ') [ng-click]')
+                                .wait(1000)
                                 .evaluate(function(preferenceOptions, current_day) {
                                   for (var i = 0; i < preferenceOptions.length; i++) {
                                     var expression = 'menu-item:not(:has(.ribbon.soldout))';
@@ -42,12 +38,11 @@ var checkThDay = function(current_day) {
                                       if (typeof(filter) === 'string') { filter = [filter];}
                                       expression += filter.map(function(e) { return ':not(:contains(' + e + '))'; }).join();
                                     }
-                                    console.log(expression);
-                                    var candidates = $(expression);
-                                    console.log('Food including "' + preferenceOptions[i].include + '" excluding "' + preferenceOptions[i].exclude + '" count: ' + candidates.length);
+                                    var candidates = $(expression, '#menu-' + (current_day-1));
+                                    console.log("$('" + expression + "')" + ' – Food including "' + preferenceOptions[i].include + (preferenceOptions[i].exclude ? '" excluding "' + preferenceOptions[i].exclude + '"' : '') + ' count: ' + candidates.length);
                                     if (candidates.length > 0) {
                                       var $selection = $('.item-purchase-button .ng-binding:not(.ng-hide):contains(Add)', candidates.get(0));
-                                      dishName = $selection.closest('menu-item').find('.mi-item-name-link').text().trim();
+                                      dishName = $selection.closest('menu-item').find('.item-title').text().trim();
                                       console.log('Picking ' + dishName);
                                       $selection.click();
                                       return dishName;
