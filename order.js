@@ -22,7 +22,9 @@ var checkDayNumber = function(current_day) {
                        return nightmare
                                 .wait('.collapsible-date-selector .hide-for-small-only:nth-child(' + (current_day) + ') [ng-click] .date-header')
                                 .click('.collapsible-date-selector .hide-for-small-only:nth-child(' + (current_day) + ') [ng-click]')
-                                .wait('#menu-' + (current_day-1) + ' menu-item, #menu-' + (current_day-1) + ' .closed-title')
+                                .wait('.collapsible-date-selector .hide-for-small-only:nth-child(' + (current_day) + ') [ng-click].selected-date')
+                                .wait(1000)
+                                .wait('menu-items menu-item, menu-items .closed-title')
                                 .evaluate(function(preferenceOptions, current_day) {
                                   for (var i = 0; i < preferenceOptions.length; i++) {
                                     var expression = 'menu-item:not(:has(.ribbon.soldout))';
@@ -36,7 +38,7 @@ var checkDayNumber = function(current_day) {
                                       if (typeof(filter) === 'string') { filter = [filter];}
                                       expression += filter.map(function(e) { return ':not(:contains(' + e + '))'; }).join();
                                     }
-                                    var candidates = $(expression, '#menu-' + (current_day-1));
+                                    var candidates = $(expression, 'menu-items');
                                     console.log("$('" + expression + "')" + ' – Food including "' + preferenceOptions[i].include + (preferenceOptions[i].exclude ? '" excluding "' + preferenceOptions[i].exclude + '"' : '') + ' count: ' + candidates.length);
                                     if (candidates.length > 0) {
                                       var $selection = $('.item-purchase-button .ng-binding:not(.ng-hide):contains(Add)', candidates.get(0));
@@ -57,6 +59,7 @@ var checkDayNumber = function(current_day) {
                                   $('.cart-item-price:contains($):not(:contains($0.00))').parent().parent().find('.cart-item-delete').click();
                                   $('button:contains(Checkout)').click();
                                 })
+                                .wait(1000)
                                 .then(function() {
                                   return checkDayNumber(current_day+1);
                                 });
